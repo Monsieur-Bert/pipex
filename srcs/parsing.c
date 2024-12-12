@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:14:54 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/11 17:47:44 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:54:27 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,46 +24,50 @@ char	*rm_option_n_spaces(char *cmd)
 	end = start;
 	while (cmd[end] && cmd[end] != ' ')
 		end++;
-	only_cmd = ft_substr(cmd, start, (end - start));
+	only_cmd = ft_substr(cmd, start, (end - start)); // ! security
 	return (only_cmd);
 }
 
-// ! securiser les putians de mallocs
-int	valid_path(char *cmd, char **paths, int count)
+char	*get_pathname(char *cmd, char *path)
+{
+	char	*buffer;
+	char	*only_cmd;
+	char	*pathname;
+
+	only_cmd = rm_option_n_spaces(cmd);
+
+	buffer = ft_strjoin(path, "/");
+	pathname = ft_strjoin(buffer, only_cmd); // ! code a multiple arg Malloc
+	free(only_cmd);
+	free(buffer);
+	return (pathname);
+}
+
+int	valid_path(char *cmd, t_data *data)
 {
 	int		i;
-	char	*only_cmd;
-	char	*buff1;
-	char	*buff2;
-
+	char	*pathname;
+	
 	i = 0;
-	only_cmd = rm_option_n_spaces(cmd);
-	while (i < count)
+	while (i < data->n_paths)
 	{
-		buff1 = ft_strjoin(paths[i], "/"); // ! coder un strjoin a arg-multiples
-		buff2 = ft_strjoin(buff1, only_cmd);
-		free(buff1);
-		if (access(buff2, X_OK) != -1 && only_cmd[0] != ' '
-			&& only_cmd[0] != '\0')
+		pathname = get_pathname(cmd, data->paths[i]); // ! security
+		if (access(pathname, X_OK) != -1)
 		{
-			free(buff2);
-			free(only_cmd);
+			free(pathname);
 			return (1);
 		}
-		free(buff2);
+		free(pathname);
 		i++;
 	}
-	free(only_cmd);
 	return (0);
 }
 
-void	get_paths(char *cmd, char **env)
+void	get_paths(char **env, t_data *data)
 {
 	int		i;
-	int		count;
 	char	*envp;
-	char	**paths;
-	(void)cmd;
+
 	i = 0;
 	while (env[i])
 	{
@@ -72,18 +76,12 @@ void	get_paths(char *cmd, char **env)
 		i++;
 	}
 	envp = ft_strtrim(env[i], "PATH=");
-	count = ft_count_words(envp, ':');
-	paths = ft_split(envp, ':');
+	data->n_paths = ft_count_words(envp, ':');
+	data->paths = ft_split(envp, ':'); // ! security
 	free(envp);
-	if (!valid_path(cmd, paths, count))
-	{
-		ft_free_tabstr(paths, count);
-		ft_error();
-	}
-	ft_free_tabstr(paths, count);
 }
 
-void	parsing(int argc, char **argv, char **env)
+void	parsing(int argc, char **argv, char **env, t_data *data)
 {
 	int	n_cmd;
 
@@ -93,14 +91,18 @@ void	parsing(int argc, char **argv, char **env)
 		ft_printf(2, "Error : Wrong number of arguments\n");
 		exit (EXIT_FAILURE);
 	}
-	if (access(argv[1], F_OK) == -1) // ! pas necessaire car entree standard sera remplacee ?
-		ft_error();
+	if (access(argv[1], F_OK) == -1)
+		ft_error(ERR_INFILE);
 	while (n_cmd < argc -1)
 	{
 		if (access(argv[n_cmd], X_OK) == -1)
-			get_paths(argv[n_cmd], env);
+		{
+			if (data->paths == NULL)
+				get_paths(env, data);
+			if (!valid_path(argv[n_cmd], data))
+				clean_data(data, 1, ERR_CMD);
+		}
 		n_cmd++;
 	}
+	// ? clean_data(data, 0, NULL);
 }
-
-//casser la fucntion parsing et mettre ça a la place

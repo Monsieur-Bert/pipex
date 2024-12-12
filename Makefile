@@ -6,7 +6,7 @@
 #    By: antauber <antauber@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/08 08:19:19 by antauber          #+#    #+#              #
-#    Updated: 2024/12/11 17:45:16 by antauber         ###   ########.fr        #
+#    Updated: 2024/12/12 11:32:50 by antauber         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,9 @@ NAME	= pipex
 INC			:=	includes
 
 SRCS_DIR	:=	srcs
-SRCS		:=	srcs/pipex.c	srcs/utils.c	srcs/parsing.c
+SRCS		:=	pipex.c	utils.c	parsing.c
+SRCS		:=	$(SRCS:%=$(SRCS_DIR)/%)
+
 
 BUILD_DIR	:=	.build
 OBJS		:=	$(SRCS:$(SRCS_DIR)/%.c=$(BUILD_DIR)/%.o)

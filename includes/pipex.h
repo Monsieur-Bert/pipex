@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 10:57:44 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/12 11:49:35 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/13 16:21:13 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,16 @@
 
 /*===== SRC/UTILS.C ==========================================================*/
 void	open_files(char **argv, t_data *data);
-void	init_data(t_data *data);
+void	init_data(t_data *data, int argc, char **argv);
 void	clean_data(t_data *data, int flag, char *error);
-void	ft_error(char *error);
+void	ft_error(int flag, char *error);
 
 /*===== SRC/PARSING.C ========================================================*/
 char	*rm_option_n_spaces(char *cmd);
-int		valid_path(char *cmd, t_data *data);
+int		valid_path(t_data *data, int n_cmd);
 void	get_paths(char **env, t_data *data);
 char	*get_pathname(char *cmd, char *path);
+void	check_arg(int argc);
 void	parsing(int argc, char **argv, char **env, t_data *data);
 
 #endif

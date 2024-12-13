@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:14:54 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/12 11:54:27 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/13 15:56:12 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,33 +31,30 @@ char	*rm_option_n_spaces(char *cmd)
 char	*get_pathname(char *cmd, char *path)
 {
 	char	*buffer;
-	char	*only_cmd;
 	char	*pathname;
 
-	only_cmd = rm_option_n_spaces(cmd);
-
 	buffer = ft_strjoin(path, "/");
-	pathname = ft_strjoin(buffer, only_cmd); // ! code a multiple arg Malloc
-	free(only_cmd);
+	pathname = ft_strjoin(buffer, cmd); // ! code a multiple arg join + secu
 	free(buffer);
 	return (pathname);
 }
 
-int	valid_path(char *cmd, t_data *data)
+int	valid_path(t_data *data, int n_cmd)
 {
 	int		i;
-	char	*pathname;
+	char	*buffer;
 	
 	i = 0;
 	while (i < data->n_paths)
 	{
-		pathname = get_pathname(cmd, data->paths[i]); // ! security
-		if (access(pathname, X_OK) != -1)
+		buffer = get_pathname(data->only_cmd, data->paths[i]); // ! security
+		if (access(buffer, X_OK) != -1)
 		{
-			free(pathname);
+			data->cmdp[n_cmd] = ft_strdup(buffer);
+			free(buffer);
 			return (1);
 		}
-		free(pathname);
+		free(buffer);
 		i++;
 	}
 	return (0);
@@ -81,28 +78,38 @@ void	get_paths(char **env, t_data *data)
 	free(envp);
 }
 
-void	parsing(int argc, char **argv, char **env, t_data *data)
+void	check_arg(int argc)
 {
-	int	n_cmd;
-
-	n_cmd  = 2;
 	if (argc != 5) // ! change it for pipeline_bonus
 	{
 		ft_printf(2, "Error : Wrong number of arguments\n");
 		exit (EXIT_FAILURE);
 	}
+}
+
+void	parsing(int argc, char **argv, char **env, t_data *data)
+{
+	int		i_cmd;
+
+	i_cmd  = 2;
+	check_arg(argc);
 	if (access(argv[1], F_OK) == -1)
-		ft_error(ERR_INFILE);
-	while (n_cmd < argc -1)
+		ft_error(1, ERR_INFILE);
+	while (i_cmd < argc -1)
 	{
-		if (access(argv[n_cmd], X_OK) == -1)
+		data->only_cmd = rm_option_n_spaces(argv[i_cmd]);
+		if (access(data->only_cmd, X_OK) == -1)
 		{
 			if (data->paths == NULL)
 				get_paths(env, data);
-			if (!valid_path(argv[n_cmd], data))
+			if (!valid_path(data, i_cmd - 2))
 				clean_data(data, 1, ERR_CMD);
 		}
-		n_cmd++;
+		else
+			data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd); // ! security
+		i_cmd++;
+		free(data->only_cmd);
+		data->only_cmd = NULL;
 	}
-	// ? clean_data(data, 0, NULL);
+	data->cmdp[i_cmd - 2] = NULL;
 }

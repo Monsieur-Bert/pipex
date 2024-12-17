@@ -6,7 +6,7 @@
 #    By: antauber <antauber@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/08 08:19:19 by antauber          #+#    #+#              #
-#    Updated: 2024/12/13 11:50:49 by antauber         ###   ########.fr        #
+#    Updated: 2024/12/17 09:54:37 by antauber         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ NAME	= pipex
 INC			:=	includes
 
 SRCS_DIR	:=	srcs
-SRCS		:=	pipex.c	utils.c	parsing.c
+SRCS		:=	pipex.c	utils.c	parsing.c processes.c
 SRCS		:=	$(SRCS:%=$(SRCS_DIR)/%)
 
 

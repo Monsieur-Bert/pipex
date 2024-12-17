@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 10:57:44 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/13 16:21:13 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/17 13:39:25 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,21 @@
 
 # include <stdio.h> // ! A supprimer c'est printf olala
 
-/*===== SRC/UTILS.C ==========================================================*/
-void	open_files(char **argv, t_data *data);
+/*===== SRCS/UTILS.C =========================================================*/
 void	init_data(t_data *data, int argc, char **argv);
 void	clean_data(t_data *data, int flag, char *error);
 void	ft_error(int flag, char *error);
 
-/*===== SRC/PARSING.C ========================================================*/
-char	*rm_option_n_spaces(char *cmd);
+/*===== SRCS/PROCESSES.C =====================================================*/
+void	exec_process(t_data *data, char *argv, char **env, int i_cmd);
+void	child_process(t_data *data, char *argv, char **env, int i_cmd);
+
+/*===== SRCS/PARSING.C =======================================================*/
+char	*rm_option_n_spaces(t_data *data, char *cmd);
 int		valid_path(t_data *data, int n_cmd);
-void	get_paths(char **env, t_data *data);
+void	get_paths(t_data *data, char **env);
 char	*get_pathname(char *cmd, char *path);
-void	check_arg(int argc);
-void	parsing(int argc, char **argv, char **env, t_data *data);
+void	check_arg(int argc, char **argv);
+void	parsing(t_data *data, int argc, char **argv, char **env);
 
 #endif

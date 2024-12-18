@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 15:04:56 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/17 14:18:54 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/18 09:07:04 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_data
 	int		n_cmdp;
 	int		fd_in;
 	int		fd_out;
+	int		pipefd[2];
 }	t_data;
 
 #endif

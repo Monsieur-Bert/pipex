@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:14:54 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/17 15:33:21 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:54:25 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*rm_option_n_spaces(t_data *data, char *cmd)
 		end++;
 	only_cmd = ft_substr(cmd, start, (end - start));
 	if (only_cmd == NULL)
-		clean_data(data, 2, ERR_MALL);
+		clean_data(data, 2, ERR_MALL, NULL);
 	return (only_cmd);
 }
 
@@ -51,7 +51,7 @@ int	valid_path(t_data *data, int n_cmd)
 	{
 		buffer = get_pathname(data->only_cmd, data->paths[i]);
 		if (buffer == NULL)
-			clean_data(data, 2, ERR_MALL);
+			clean_data(data, 2, ERR_MALL, NULL);
 		if (access(buffer, X_OK) != -1)
 		{
 			data->cmdp[n_cmd] = ft_strdup(buffer);
@@ -80,19 +80,8 @@ void	get_paths(t_data *data, char **env)
 	data->n_paths = ft_count_words(envp, ':');
 	data->paths = ft_split(envp, ':');
 	if (data->paths == NULL)
-		clean_data(data, 2, ERR_MALL);
+		clean_data(data, 2, ERR_MALL, NULL);
 	free(envp);
-}
-
-void	check_arg(int argc, char **argv)
-{
-	if (argc != 5) // ! change it for pipeline_bonus -> if (argc < 5)
-	{
-		ft_printf(2, "Error : Wrong number of arguments\n");
-		exit (EXIT_FAILURE);
-	}
-	if (access(argv[1], F_OK) == -1)
-		ft_error(1, ERR_INFILE);
 }
 
 void	parsing(t_data *data, int argc, char **argv, char **env)
@@ -100,7 +89,6 @@ void	parsing(t_data *data, int argc, char **argv, char **env)
 	int		i_cmd;
 
 	i_cmd = 2;
-	check_arg(argc, argv);
 	while (i_cmd < argc -1)
 	{
 		data->only_cmd = rm_option_n_spaces(data, argv[i_cmd]);
@@ -109,13 +97,14 @@ void	parsing(t_data *data, int argc, char **argv, char **env)
 			if (data->paths == NULL)
 				get_paths(data, env);
 			if (!valid_path(data, i_cmd - 2))
-				clean_data(data, 1, ERR_CMD);
+				data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd);
+				//ft_error(3, ERR_CMD, argv[i_cmd]);
 		}
 		else
 		{
 			data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd);
 			if (data->cmdp[i_cmd - 2] == NULL)
-				clean_data(data, 2, ERR_MALL);
+				clean_data(data, 2, ERR_MALL, NULL);
 		}
 		i_cmd++;
 		free(data->only_cmd);

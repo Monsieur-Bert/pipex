@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 14:06:49 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/19 09:34:06 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:40:00 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	check_arg(int argc, char **argv)
 {
-	if (argc != 5)
+	if (argc < 5)
 	{
 		ft_printf(2, "Error : Wrong number of arguments\n");
 		exit (EXIT_FAILURE);

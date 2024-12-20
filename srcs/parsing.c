@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:14:54 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/19 08:36:53 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/20 14:59:45 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	valid_path(t_data *data, int n_cmd)
 		if (access(pathname, X_OK) != -1)
 		{
 			data->cmdp[n_cmd] = ft_strdup(pathname);
+			if (data->cmdp[n_cmd] == NULL)
+				clean_data(data, 2, ERR_MALL, NULL);
 			free(pathname);
 			return (1);
 		}
@@ -66,6 +68,8 @@ void	get_paths(t_data *data, char **env)
 		i++;
 	}
 	envp = ft_strtrim(env[i], "PATH=");
+	if (envp == NULL)
+		clean_data(data, 2, ERR_MALL, NULL);
 	data->n_paths = ft_count_words(envp, ':');
 	data->paths = ft_split(envp, ':');
 	if (data->paths == NULL)
@@ -86,7 +90,7 @@ void	parsing(t_data *data, int argc, char **argv, char **env)
 			if (data->paths == NULL)
 				get_paths(data, env);
 			if (!valid_path(data, i_cmd - 2))
-				data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd);
+				data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd); // ? utilité incertaine + need protection
 		}
 		else
 		{

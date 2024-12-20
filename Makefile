@@ -6,7 +6,7 @@
 #    By: antauber <antauber@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/08 08:19:19 by antauber          #+#    #+#              #
-#    Updated: 2024/12/19 09:56:29 by antauber         ###   ########.fr        #
+#    Updated: 2024/12/20 14:47:55 by antauber         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,15 +31,9 @@ SRCS_DIR	:=	srcs
 SRCS		:=	pipex.c	utils.c	parsing.c	processes.c
 SRCS		:=	$(SRCS:%=$(SRCS_DIR)/%)
 
-SRCS_B_DIR	:=	bonus
-SRCS_B		:=	pipex_bonus.c	utils_bonus.c	parsing_bonus.c	processes_bonus.c
-SRCS_B		:=	$(SRCS_B:%=$(SRCS_B_DIR)/%)
-
 BUILD_DIR	:=	.build
 OBJS		:=	$(SRCS:$(SRCS_DIR)/%.c=$(BUILD_DIR)/%.o)
-OBJS_B		:=	$(SRCS_B:$(SRCS_B_DIR)/%.c=$(BUILD_DIR)/%.o)
 DEPS		:=	$(SRCS:$(SRCS_DIR)/%.c=$(BUILD_DIR)/%.d)
-DEPS_B		:=	$(SRCS_B:$(SRCS_B_DIR)/%.c=$(BUILD_DIR)/%.d)
 
 LIB_DIR		=	libft
 LIBFT		=	libft/libft.a
@@ -82,17 +76,10 @@ RESET 	= \e[0m
 
 all: $(LIBFT) $(NAME)
 
-bonus : $(LIBFT) $(BONUS)
-
 $(NAME): $(OBJS)
 	@echo "$(AQUA)Compiling $(NAME)..................\n$(RESET)"
 	@$(CC) $(CFLAGS) $^ -L$(LIB_DIR) -lft -o $@
 	@echo "	$(GREEN)-----	$(NAME) successfully created	-----$(RESET)	\n"
-
-$(BONUS): $(OBJS_B)
-	@echo "$(AQUA)Compiling $(BONUS)..................\n$(RESET)"
-	@$(CC) $(CFLAGS) $^ -L$(LIB_DIR) -lft -o $@
-	@echo "	$(GREEN)-----	$(BONUS) successfully created	-----$(RESET)	\n"
 
 $(LIBFT):
 	@echo "$(AQUA)Compiling $(LIB_DIR)..................\n$(RESET)"
@@ -118,6 +105,6 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re bonus
+.PHONY: all bonus clean fclean re
 
 -include $(DEPS)

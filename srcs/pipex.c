@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:39:17 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/18 13:53:27 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/20 16:12:13 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,13 @@ int	main(int argc, char **argv, char **env)
 	check_arg(argc, argv);
 	init_data(&data, argc, argv);
 	parsing(&data, argc, argv, env);
-	if (dup2(data.fd_in, STDIN_FILENO))
-		clean_data(&data, 1, ERR_DUP2, NULL);
-	close (data.fd_in);
+	if (data.fd_in != -1)
+	{
+		if (dup2(data.fd_in, STDIN_FILENO))
+			clean_data(&data, 1, ERR_DUP2, NULL);
+	}
+	else
+		i++;
 	while (i < argc - 1)
 	{
 		processes(&data, argv[i], env, (i - 2));

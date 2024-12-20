@@ -6,20 +6,29 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:09:03 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/19 08:57:28 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/20 16:10:23 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pipex.h>
 
+void	wrong_infile(void)
+{
+	int	null_fd;
+
+	null_fd = open("/dev/null", O_RDONLY);
+	if (null_fd != -1)
+	{
+		dup2(null_fd, STDIN_FILENO);
+		close(null_fd);
+	}
+}
 void	exec_process(t_data *data, char *argv, char **env, int i_cmd)
 {
 	char	**params;
 	int		size;
 
 	data->only_cmd = rm_option_n_spaces(data, data->cmdp[i_cmd]);
-	if (data->only_cmd == NULL)
-		clean_data(data, 2, ERR_MALL, NULL);
 	params = ft_split(argv, ' ');
 	if (params == NULL)
 		clean_data(data, 2, ERR_MALL, NULL);
@@ -34,6 +43,8 @@ void	exec_process(t_data *data, char *argv, char **env, int i_cmd)
 
 void	child_process(t_data *data, char *argv, char **env, int i_cmd)
 {
+	if (data->fd_in == -1 && i_cmd == 1)
+		wrong_infile();
 	if (i_cmd == data->n_cmdp - 1)
 	{
 		close(data->pipefd[0]);

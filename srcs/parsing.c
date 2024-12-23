@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:14:54 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/20 14:59:45 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:20:29 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,17 +82,11 @@ void	parsing(t_data *data, int argc, char **argv, char **env)
 	int		i_cmd;
 
 	i_cmd = 2;
+	get_paths(data, env);
 	while (i_cmd < argc -1)
 	{
 		data->only_cmd = rm_option_n_spaces(data, argv[i_cmd]);
-		if (access(data->only_cmd, X_OK) == -1)
-		{
-			if (data->paths == NULL)
-				get_paths(data, env);
-			if (!valid_path(data, i_cmd - 2))
-				data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd); // ? utilité incertaine + need protection
-		}
-		else
+		if (!valid_path(data, i_cmd - 2))
 		{
 			data->cmdp[i_cmd - 2] = ft_strdup(data->only_cmd);
 			if (data->cmdp[i_cmd - 2] == NULL)

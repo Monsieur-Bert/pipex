@@ -6,11 +6,20 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:39:17 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/20 16:12:13 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:20:33 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pipex.h>
+
+void	check_arg(int argc)
+{
+	if (argc < 5)
+	{
+		ft_printf(2, "Error : Wrong number of arguments\n");
+		exit (EXIT_FAILURE);
+	}
+}
 
 int	main(int argc, char **argv, char **env)
 {
@@ -18,7 +27,7 @@ int	main(int argc, char **argv, char **env)
 	int		i;
 
 	i = 2;
-	check_arg(argc, argv);
+	check_arg(argc);
 	init_data(&data, argc, argv);
 	parsing(&data, argc, argv, env);
 	if (data.fd_in != -1)
@@ -28,7 +37,7 @@ int	main(int argc, char **argv, char **env)
 	}
 	else
 		i++;
-	while (i < argc - 1)
+	while (i < argc - 1 - (data.fd_out == -1))
 	{
 		processes(&data, argv[i], env, (i - 2));
 		i++;

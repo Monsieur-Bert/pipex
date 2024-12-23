@@ -6,23 +6,38 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 14:06:49 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/20 15:40:36 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:21:47 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pipex.h>
 
-void	check_arg(int argc, char **argv)
+void	open_files(t_data *data, int argc, char **argv)
 {
-	if (argc < 5)
+	if (access(argv[1], F_OK | R_OK) == -1)
 	{
-		ft_printf(2, "Error : Wrong number of arguments\n");
-		exit (EXIT_FAILURE);
+		data->fd_in = -1;
+		ft_error(3, ERR_INFILE, argv[1]);
+	}
+	else
+	{
+		data->fd_in = open(argv[1], O_RDONLY);
+		if (data->fd_in == -1)
+			clean_data(data, 1, ERR_INFILE, argv[1]);
 	}
 	if (access(argv[argc - 1], F_OK) == 0)
 	{
 		if (access(argv[argc - 1], W_OK) == -1)
-			ft_error(1, ERR_OUTFILE, argv[argc -1]);
+		{
+			data->fd_out = -1;
+			ft_error(3, ERR_OUTFILE, argv[argc -1]);
+		}
+	}
+	if (access(argv[argc -1], W_OK) != -1 || access(argv[argc -1], F_OK) == -1)
+	{
+		data->fd_out = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (data->fd_out == -1)
+			clean_data(data, 1, ERR_OUTFILE, argv[argc -1]);
 	}
 }
 
@@ -36,20 +51,7 @@ void	init_data(t_data *data, int argc, char **argv)
 	data->cmdp = ft_calloc((data->n_cmdp + 1), sizeof(char *));
 	if (data->cmdp == NULL)
 		clean_data(data, 2, ERR_MALL, NULL);
-	if (access(argv[1], F_OK) == -1)
-	{
-		data->fd_in = -1;
-		ft_error(3, ERR_INFILE, argv[1]);
-	}
-	else
-	{
-		data->fd_in = open(argv[1], O_RDONLY);
-		if (data->fd_in == -1)
-			clean_data(data, 1, ERR_INFILE, argv[1]);
-	}
-	data->fd_out = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	if (data->fd_out == -1)
-		clean_data(data, 1, ERR_OUTFILE, argv[argc -1]);
+	open_files(data, argc, argv);
 }
 
 void	close_files(t_data *data)

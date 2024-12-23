@@ -6,23 +6,25 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 16:09:03 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/20 16:10:23 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:20:49 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pipex.h>
 
-void	wrong_infile(void)
+void	wrong_infile(t_data *data)
 {
 	int	null_fd;
 
 	null_fd = open("/dev/null", O_RDONLY);
 	if (null_fd != -1)
 	{
-		dup2(null_fd, STDIN_FILENO);
+		if (dup2(null_fd, STDIN_FILENO) == -1)
+			clean_data(data, 1, ERR_DUP2, NULL);
 		close(null_fd);
 	}
 }
+
 void	exec_process(t_data *data, char *argv, char **env, int i_cmd)
 {
 	char	**params;
@@ -44,7 +46,7 @@ void	exec_process(t_data *data, char *argv, char **env, int i_cmd)
 void	child_process(t_data *data, char *argv, char **env, int i_cmd)
 {
 	if (data->fd_in == -1 && i_cmd == 1)
-		wrong_infile();
+		wrong_infile(data);
 	if (i_cmd == data->n_cmdp - 1)
 	{
 		close(data->pipefd[0]);

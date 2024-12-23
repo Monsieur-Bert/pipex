@@ -6,7 +6,7 @@
 /*   By: antauber <antauber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 10:57:44 by antauber          #+#    #+#             */
-/*   Updated: 2024/12/19 09:18:31 by antauber         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:12:47 by antauber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,11 @@
 # include <structs.h>
 # include <macros.h>
 
+/*===== SRCS/PIPEX.C =======================================================*/
+void	check_arg(int argc);
+
 /*===== SRCS/UTILS.C =========================================================*/
-void	check_arg(int argc, char **argv);
+void	open_files(t_data *data, int argc, char **argv);
 void	init_data(t_data *data, int argc, char **argv);
 void	close_files(t_data *data);
 void	clean_data(t_data *data, int flag, char *error, char *name);
